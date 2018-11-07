@@ -1,13 +1,35 @@
 #include "FBullCowGame.h"
 
 FBullCowGame::FBullCowGame() { Reset(); }
-int32 FBullCowGame::GetMaxTries() const { return MyMaxTries; }
 int32 FBullCowGame::GetCurrentTry() const { return MyCurrentTry; }
 FString FBullCowGame::GetHiddenWord() const { return MyHiddenWord; }
 int32 FBullCowGame::GetHiddenWordLength() const { return MyHiddenWord.length(); }
 bool FBullCowGame::IsGameWon() const { return bGameIsWon; }
 bool FBullCowGame::IsGuessCorrect(FBullCowCount BullCowCount) { return BullCowCount.Bulls == GetHiddenWordLength(); }
 void FBullCowGame::SetCurrentTry(int32 NewTryValue) { MyCurrentTry = NewTryValue; }
+
+void FBullCowGame::Reset()
+{
+	const FString HIDDEN_WORD = "sky"; // this must be an isogram (no duplicate letters)
+	MyHiddenWord = HIDDEN_WORD;
+	MyCurrentTry = 1;
+	bGameIsWon = false;
+	return;
+}
+
+int32 FBullCowGame::GetMaxTries() const
+{
+	TMap<int32, int32> WordLengthToMaxTries =
+	{
+		{3, 4},
+		{4, 8},
+		{5, 10},
+		{6, 18},
+		{7, 28},
+		{8, 32},
+	};
+	return WordLengthToMaxTries[GetHiddenWordLength()];
+}
 
 bool FBullCowGame::IsIsogram(FString Word) const
 {
@@ -36,17 +58,6 @@ bool FBullCowGame::IsLowercase(FString Word) const
 		if (!islower(Letter)) return false;
 	}
 	return true;
-}
-
-void FBullCowGame::Reset()
-{
-	constexpr unsigned short MAX_TRIES = 8;
-	MyMaxTries = MAX_TRIES;
-	const FString HIDDEN_WORD = "planet";
-	MyHiddenWord = HIDDEN_WORD;
-	MyCurrentTry = 1;
-	bGameIsWon = false;
-	return;
 }
 
 EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
