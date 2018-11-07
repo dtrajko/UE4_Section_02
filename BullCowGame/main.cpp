@@ -44,10 +44,18 @@ int main()
 
 void PrintIntro()
 {
-	// introduce the game
 	printf("\033c");
-	std::cout << "Welcome to Bulls and Cows, a fun word game!" << std::endl;
-	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength() << " letter isogram I'm thinking of?" << std::endl;
+	std::cout << "Welcome to Bulls and Cows, a fun word game." << std::endl;;
+	std::cout << std::endl;
+	std::cout << "          }   {         ___            " << std::endl;
+	std::cout << "          (o o)        (o o)           " << std::endl;
+	std::cout << "   /-------\\ /          \\ /-------\\ " << std::endl;
+	std::cout << "  / | BULL |O            O| COW  | \\  " << std::endl;
+	std::cout << " *  |-,--- |              |------|  *  " << std::endl;
+	std::cout << "    ^      ^              ^      ^     " << std::endl;
+	std::cout << std::endl;
+	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength();
+	std::cout << " letter isogram I'm thinking of?" << std::endl;
 	std::cout << std::endl;
 	return;
 }
@@ -56,7 +64,7 @@ bool PlayGame()
 {
 	BCGame.Reset();
 	int32 MaxTries = BCGame.GetMaxTries();
-	std::cout << "MaxTries: " << MaxTries << std::endl;
+	// std::cout << "MaxTries: " << MaxTries << std::endl;
 
 	// loop for the number of turns asking for guesses
 	// TODO change from FOR to WHILE loop once we are validating tries
@@ -94,7 +102,7 @@ FText GetValidGuess()
 	{
 		// get a guess from the player
 		int32 CurrentTry = BCGame.GetCurrentTry();
-		std::cout << "Try " << CurrentTry << ". Enter your guess ('exit' to abort): ";
+		std::cout << "Try " << CurrentTry << " of " << BCGame.GetMaxTries() << ". Enter your guess ('exit' to abort): ";
 		Guess = "";
 		std::getline(std::cin, Guess);
 

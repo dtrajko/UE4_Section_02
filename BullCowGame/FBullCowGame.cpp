@@ -31,9 +31,11 @@ bool FBullCowGame::IsIsogram(FString Word) const
 
 bool FBullCowGame::IsLowercase(FString Word) const
 {
-	FString WordLC = Word;
-	std::transform(WordLC.begin(), WordLC.end(), WordLC.begin(), ::tolower);
-	return WordLC == Word;
+	for (auto Letter : Word)
+	{
+		if (!islower(Letter)) return false;
+	}
+	return true;
 }
 
 void FBullCowGame::Reset()
@@ -102,4 +104,5 @@ FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
 void FBullCowGame::PrintBullsAndCows(FBullCowCount BullCowCount)
 {
 	std::cout << "Bulls: " << BullCowCount.Bulls << ". Cows: " << BullCowCount.Cows << "." << std::endl;
+	std::cout << std::endl;
 }
