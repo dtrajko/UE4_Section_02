@@ -5,6 +5,36 @@ int32 FBullCowGame::GetMaxTries() const { return MyMaxTries; }
 int32 FBullCowGame::GetCurrentTry() const { return MyCurrentTry; }
 FString FBullCowGame::GetHiddenWord() const { return MyHiddenWord; }
 int32 FBullCowGame::GetHiddenWordLength() const { return MyHiddenWord.length(); }
+bool FBullCowGame::IsGameWon() const { return bGameIsWon; }
+bool FBullCowGame::IsGuessCorrect(FBullCowCount BullCowCount) { return BullCowCount.Bulls == GetHiddenWordLength(); }
+void FBullCowGame::SetCurrentTry(int32 NewTryValue) { MyCurrentTry = NewTryValue; }
+
+bool FBullCowGame::IsIsogram(FString Word) const
+{
+	// consider 0 and 1 letter words as isograms
+	if (Word.length() <= 1) return true;
+	TMap<char, bool> LetterSeen;
+	for (auto Letter : Word)
+	{
+		Letter = tolower(Letter);
+		if (LetterSeen[Letter])
+		{
+			return false;
+		}
+		else
+		{
+			LetterSeen[Letter] = true;
+		}
+	}
+	return true;
+}
+
+bool FBullCowGame::IsLowercase(FString Word) const
+{
+	FString WordLC = Word;
+	std::transform(WordLC.begin(), WordLC.end(), WordLC.begin(), ::tolower);
+	return WordLC == Word;
+}
 
 void FBullCowGame::Reset()
 {
@@ -13,28 +43,23 @@ void FBullCowGame::Reset()
 	const FString HIDDEN_WORD = "planet";
 	MyHiddenWord = HIDDEN_WORD;
 	MyCurrentTry = 1;
+	bGameIsWon = false;
 	return;
-}
-
-bool FBullCowGame::IsGameWon() const
-{
-	return false;
 }
 
 EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 {
-	// if the guess isn't an isogram
-	if (false)
+	if (Guess.length() != GetHiddenWordLength())
 	{
-		return EGuessStatus::Not_Isogram;
+		return EGuessStatus::Wrong_Length;
 	}
-	else if (false)
+	else if (!IsLowercase(Guess))
 	{
 		return EGuessStatus::Not_Lowercase;
 	}
-	else if (Guess.length() != GetHiddenWordLength())
+	else if (!IsIsogram(Guess))
 	{
-		return EGuessStatus::Wrong_Length;
+		return EGuessStatus::Not_Isogram;
 	}
 	else
 	{
@@ -44,12 +69,9 @@ EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 
 // v1 counts bulls and cows, and increases try number, assuming valid guess
 // v2 receives a VALID guess, increments turns, and returns count
-FBullCowCount FBullCowGame::SubmitGuess(FString Guess)
+FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
 {
-	// increment the turn number
 	MyCurrentTry++;
-
-	// setup a return value
 	FBullCowCount BullCowCount;
 
 	int32 HiddenWordLength = MyHiddenWord.length();
@@ -72,21 +94,12 @@ FBullCowCount FBullCowGame::SubmitGuess(FString Guess)
 		}
 	}
 
+	bGameIsWon = IsGuessCorrect(BullCowCount);
+
 	return BullCowCount;
 }
 
 void FBullCowGame::PrintBullsAndCows(FBullCowCount BullCowCount)
 {
-	std::cout << "Bulls: " << BullCowCount.Bulls << std::endl;
-	std::cout << "Cows: " << BullCowCount.Cows << std::endl;
-}
-
-bool FBullCowGame::IsIsogram(FString)
-{
-	return false;
-}
-
-bool FBullCowGame::IsGuessCorrect(FBullCowCount BullCowCount)
-{
-	return BullCowCount.Bulls == MyHiddenWord.length();
+	std::cout << "Bulls: " << BullCowCount.Bulls << ". Cows: " << BullCowCount.Cows << "." << std::endl;
 }
