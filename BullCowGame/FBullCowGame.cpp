@@ -3,11 +3,8 @@
 FBullCowGame::FBullCowGame() { Reset(); }
 int32 FBullCowGame::GetMaxTries() const { return MyMaxTries; }
 int32 FBullCowGame::GetCurrentTry() const { return MyCurrentTry; }
-
-FString FBullCowGame::GetMyHiddenWord() const
-{
-	return MyHiddenWord;
-}
+FString FBullCowGame::GetHiddenWord() const { return MyHiddenWord; }
+int32 FBullCowGame::GetHiddenWordLength() const { return MyHiddenWord.length(); }
 
 void FBullCowGame::Reset()
 {
@@ -24,9 +21,25 @@ bool FBullCowGame::IsGameWon() const
 	return false;
 }
 
-bool FBullCowGame::CheckGuessValidity(FString)
+EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 {
-	return false;
+	// if the guess isn't an isogram
+	if (false)
+	{
+		return EGuessStatus::Not_Isogram;
+	}
+	else if (false)
+	{
+		return EGuessStatus::Not_Lowercase;
+	}
+	else if (Guess.length() != GetHiddenWordLength())
+	{
+		return EGuessStatus::Wrong_Length;
+	}
+	else
+	{
+		return EGuessStatus::OK;
+	}
 }
 
 // v1 counts bulls and cows, and increases try number, assuming valid guess
@@ -40,13 +53,14 @@ FBullCowCount FBullCowGame::SubmitGuess(FString Guess)
 	FBullCowCount BullCowCount;
 
 	int32 HiddenWordLength = MyHiddenWord.length();
-	for (int32 i = 0; i < HiddenWordLength; i++)
+	int32 GuessLength = Guess.length();
+	for (int32 indHW = 0; indHW < HiddenWordLength; indHW++)
 	{
-		for (int32 j = 0; j < HiddenWordLength; j++)
+		for (int32 indG = 0; indG < GuessLength; indG++)
 		{
-			if (Guess[i] == MyHiddenWord[j])
+			if (Guess[indG] == MyHiddenWord[indHW])
 			{
-				if (i == j)
+				if (indG == indHW)
 				{
 					BullCowCount.Bulls++;
 				}
